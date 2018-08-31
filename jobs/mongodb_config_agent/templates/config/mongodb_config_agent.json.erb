@@ -28,6 +28,7 @@
     "config_servers" => p("mongo_ops.config_servers"),
     "replicas" => p("mongo_ops.replicas"),
     "require_ssl" => p("mongo_ops.require_ssl"),
+    "patch_file" => "/var/vcap/jobs/mongodb_config_agent/config/processes_args_patch.json",
   }
   JSON.pretty_generate(config)
 %>

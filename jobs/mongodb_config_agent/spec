@@ -14,6 +14,7 @@ templates:
   config/cacert.pem.erb: config/cacert.pem
   config/mongodb_config_agent.json.erb: config/mongodb_config_agent.json
   config/server.pem.erb: config/server.pem
+  config/processes_args_patch.json.erb: config/processes_args_patch.json
   dns/aliases.json.erb: dns/aliases.json
 
 provides:
@@ -85,3 +86,5 @@ properties:
     description: "MongoDB server CA certificate"
   mongo_ops.ssl_pem:
     description: "MongoDB SSL certificate (PEM file)"
+  mongo_ops.processes_args_patch:
+    description: "JSON patch with configuration options for each MongoDB instance."

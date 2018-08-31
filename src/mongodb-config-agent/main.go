@@ -2,12 +2,14 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/cf-platform-eng/mongodb-on-demand-release/src/mongodb-service-adapter/adapter"
+	jsonpatch "github.com/evanphx/json-patch"
 )
 
 var (
@@ -25,6 +27,11 @@ func main() {
 
 	logger := log.New(os.Stderr, "[mongodb-config-agent] ", log.LstdFlags)
 	omClient := adapter.OMClient{Url: config.URL, Username: config.Username, ApiKey: config.APIKey}
+
+	patchJSON, err := ioutil.ReadFile(config.PatchFile)
+	if err != nil {
+		log.Fatalf("Error reading JSON patch file: %s", err)
+	}
 
 	nodes := strings.Split(config.NodeAddresses, ",")
 	ctx := &adapter.DocContext{
@@ -51,6 +58,24 @@ func main() {
 	}
 	logger.Println(doc)
 
+	var modifiedDoc []byte
+	if BytesToString(patchJSON) != "" {
+		patch, err := jsonpatch.DecodePatch(patchJSON)
+		if err != nil {
+			logger.Fatalf("Error decoding patch file: %s", err)
+		}
+
+		modifiedDoc, err = patch.Apply([]byte(doc))
+		if err != nil {
+			logger.Fatalf("Error applying patch file: %s", err)
+		}
+	}
+
+	automationAgentDoc := doc
+	if BytesToString(patchJSON) != "" {
+		automationAgentDoc = BytesToString(modifiedDoc)
+	}
+
 	monitoringAgentDoc, err := omClient.LoadDoc(adapter.MonitoringAgentConfiguration, ctx)
 	if err != nil {
 		logger.Fatal(err)
@@ -75,7 +100,7 @@ func main() {
 		if groupHosts.TotalCount == 0 {
 			logger.Printf("Host count for %s is 0, configuring...", config.GroupID)
 
-			err = omClient.ConfigureGroup(doc, config.GroupID)
+			err = omClient.ConfigureGroup(automationAgentDoc, config.GroupID)
 			if err != nil {
 				logger.Fatal(err)
 			}
@@ -95,4 +120,9 @@ func main() {
 
 		time.Sleep(30 * time.Second)
 	}
+}
+
+// BytesToString convert []byte to string
+func BytesToString(data []byte) string {
+	return string(data[:])
 }

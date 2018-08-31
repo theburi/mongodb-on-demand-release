@@ -23,6 +23,7 @@ type Config struct {
 	ConfigServers int    `json:"config_servers"`
 	Replicas      int    `json:"replicas"`
 	RequireSSL    bool   `json:"require_ssl"`
+	PatchFile     string `json:"patch_file"`
 }
 
 func LoadConfig(configFile string) (config *Config, err error) {
@@ -87,6 +88,10 @@ func (c Config) Validate() error {
 
 	if c.EngineVersion == "" {
 		return errors.New("Must provide a non-empty Engine Version")
+	}
+
+	if c.PatchFile == "" {
+		return errors.New("Must provide a non-empty Patch File path")
 	}
 
 	return nil

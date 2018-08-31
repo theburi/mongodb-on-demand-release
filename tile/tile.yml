@@ -67,6 +67,12 @@ forms:
     configurable: true
     label: MongoDB availability zone(s)
     description: Select one or more availability zones
+  - name: processes_args_patch
+    type: text
+    optional: true
+    configurable: true
+    label: JSON patch with configuration options for each MongoDB instance
+    description: 'JSON patch that describe the changes needed to convert the original MongoDB automation template'
   - name: vm_extensions
     type: multi_select_options
     optional: true
@@ -497,6 +503,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -537,6 +544,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -577,6 +585,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -617,6 +626,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -657,6 +667,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -697,6 +708,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -739,6 +751,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -781,6 +794,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))
@@ -823,6 +837,7 @@ packages:
               ssl_ca_cert: (( .properties.ca_cert.value || "" ))
               ssl_pem: (( .properties.rsa_certificate.cert_and_private_key_pems || "" ))
               bosh_dns_disable: (( .properties.bosh_dns_disable.value ))
+              processes_args_patch: (( .properties.processes_args_patch.value || "" ))
             syslog:
               address: (( .properties.syslog_address.value || "" ))
               port: (( .properties.syslog_port.value ))

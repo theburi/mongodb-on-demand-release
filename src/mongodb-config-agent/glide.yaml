@@ -1,0 +1,4 @@
+package: github.com/cf-platform-eng/mongodb-on-demand-release/src/mongodb-config-agent
+import:
+- package: github.com/evanphx/json-patch
+  version: ~3.0.0

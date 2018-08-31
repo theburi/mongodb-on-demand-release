@@ -1,0 +1,6 @@
+hash: a057edba954417362762b1c5bc714eac13efaf42d00dc96752051fb2b28ad3d3
+updated: 2018-09-04T21:25:26.701303+03:00
+imports:
+- name: github.com/evanphx/json-patch
+  version: afac545df32f2287a079e2dfb7ba2745a643747e
+testImports: []

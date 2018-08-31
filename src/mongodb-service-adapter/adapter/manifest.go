@@ -50,6 +50,7 @@ func (m ManifestGenerator) GenerateManifest(
 	username := mongoOps["username"].(string)
 	apiKey := mongoOps["api_key"].(string)
 	boshDNSDisable := mongoOps["bosh_dns_disable"].(bool)
+	processesArgsPatch := mongoOps["processes_args_patch"].(string)
 
 	// trim trailing slash
 	url := mongoOps["url"].(string)
@@ -286,25 +287,26 @@ func (m ManifestGenerator) GenerateManifest(
 						"enabled": boolPointer(true),
 					},
 					"mongo_ops": map[string]interface{}{
-						"id":               id,
-						"url":              url,
-						"agent_api_key":    group.AgentAPIKey,
-						"api_key":          apiKey,
-						"auth_key":         authKey,
-						"username":         username,
-						"group_id":         group.ID,
-						"plan_id":          planID,
-						"admin_password":   adminPassword,
-						"engine_version":   engineVersion,
-						"routers":          routers,
-						"config_servers":   configServers,
-						"replicas":         replicas,
-						"shards":           shards,
-						"backup_enabled":   backupEnabled,
-						"require_ssl":      requireSSL,
-						"ssl_ca_cert":      caCert,
-						"ssl_pem":          sslPem,
-						"bosh_dns_disable": boshDNSDisable,
+						"id":                   id,
+						"url":                  url,
+						"agent_api_key":        group.AgentAPIKey,
+						"api_key":              apiKey,
+						"auth_key":             authKey,
+						"username":             username,
+						"group_id":             group.ID,
+						"plan_id":              planID,
+						"admin_password":       adminPassword,
+						"engine_version":       engineVersion,
+						"routers":              routers,
+						"config_servers":       configServers,
+						"replicas":             replicas,
+						"shards":               shards,
+						"backup_enabled":       backupEnabled,
+						"require_ssl":          requireSSL,
+						"ssl_ca_cert":          caCert,
+						"ssl_pem":              sslPem,
+						"bosh_dns_disable":     boshDNSDisable,
+						"processes_args_patch": processesArgsPatch,
 					},
 				},
 			},
