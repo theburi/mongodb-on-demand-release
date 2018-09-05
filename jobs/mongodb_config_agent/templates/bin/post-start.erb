@@ -22,10 +22,17 @@ link('mongod_node').instances.each do |instance|
   aliases.push(mongod_alias)
 end
 %>
-<% if p("mongo_ops.require_ssl") %>
-connection_opts="--host <%= aliases.join(',') %> --port 28000 --ssl --sslPEMKeyFile $JOB_DIR/config/server.pem --sslCAFile $JOB_DIR/config/cacert.pem"
+
+<% if p("mongo_ops.plan_id") == "sharded_cluster" %>
+port=$(om_api_call "GET" "hosts" | jq -r '[.results[] | select(.typeName == "SHARD_MONGOS")] | first | .port')
 <% else %>
-connection_opts="--host <%= link("mongod_node").instances.map {|e| e.address}.join(',') %> --port 28000 -p <%= p("mongo_ops.admin_password") %> -u admin"
+port=$(om_api_call "GET" "hosts" | jq -r ".results[0].port")
+<% end %>
+
+<% if p("mongo_ops.require_ssl") %>
+connection_opts="--host <%= aliases.join(',') %> --port ${port} --ssl --sslPEMKeyFile $JOB_DIR/config/server.pem --sslCAFile $JOB_DIR/config/cacert.pem"
+<% else %>
+connection_opts="--host <%= link("mongod_node").instances.map {|e| e.address}.join(',') %> --port ${port} -p <%= p("mongo_ops.admin_password") %> -u admin"
 <% end %>
 
 echo "Waiting 600s for MongoDB to accept connections..."

@@ -180,12 +180,31 @@ func (oc *OMClient) GetGroupHostnames(groupID string, planID string) ([]string, 
 		groupHostnames = gjson.GetBytes(b, fmt.Sprintf(`results.#[typeName="SHARD_MONGOS"]#.hostname`))
 	}
 
+	port, err := oc.GetPort(groupID, planID)
+	if err != nil {
+		return nil, err
+	}
+
 	servers := make([]string, len(groupHostnames.Array()))
 	for i, node := range groupHostnames.Array() {
-		servers[i] = fmt.Sprintf("%s:28000", node)
+		servers[i] = fmt.Sprintf("%s:%s", node, port)
 	}
 
 	return servers, nil
+}
+
+func (oc *OMClient) GetPort(groupID string, planID string) (string, error) {
+	b, err := oc.doRequest("GET", fmt.Sprintf("/api/public/v1.0/groups/%s/hosts", groupID), nil)
+	if err != nil {
+		return "", err
+	}
+
+	port := gjson.GetBytes(b, fmt.Sprintf(`results.0.port`))
+	if planID == "sharded_cluster" {
+		port = gjson.GetBytes(b, fmt.Sprintf(`results.#[typeName="SHARD_MONGOS"].port`))
+	}
+
+	return port.String(), nil
 }
 
 func (oc *OMClient) ConfigureGroup(configurationDoc string, groupID string) error {

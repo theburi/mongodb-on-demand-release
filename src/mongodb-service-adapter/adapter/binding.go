@@ -49,15 +49,22 @@ func (b Binder) CreateBinding(bindingID string, deploymentTopology bosh.BoshVMs,
 	adminAPIKey := properties["admin_api_key"].(string)
 	ssl := properties["require_ssl"].(bool)
 	groupID := properties["group_id"].(string)
+	plan := properties["plan_id"].(string)
 
 	b.logf("properties: %v", properties)
 
-	servers := make([]string, len(deploymentTopology["mongod_node"]))
-	for i, node := range deploymentTopology["mongod_node"] {
-		servers[i] = fmt.Sprintf("%s:28000", node)
+	omClient := OMClient{Url: URL, Username: adminUsername, ApiKey: adminAPIKey}
+
+	port, err := omClient.GetPort(groupID, plan)
+	if err != nil {
+		return serviceadapter.Binding{}, err
 	}
 
-	plan := properties["plan_id"].(string)
+	servers := make([]string, len(deploymentTopology["mongod_node"]))
+	for i, node := range deploymentTopology["mongod_node"] {
+		servers[i] = fmt.Sprintf("%s:%s", node, port)
+	}
+
 	if plan == PlanShardedCluster {
 		routers := properties["routers"].(int)
 		configServers := properties["config_servers"].(int)
@@ -71,7 +78,6 @@ func (b Binder) CreateBinding(bindingID string, deploymentTopology bosh.BoshVMs,
 	}
 
 	if ssl {
-		omClient := OMClient{Url: URL, Username: adminUsername, ApiKey: adminAPIKey}
 		servers, err = omClient.GetGroupHostnames(groupID, plan)
 		if err != nil {
 			return serviceadapter.Binding{}, err
@@ -153,13 +159,19 @@ func (Binder) DeleteBinding(bindingID string, deploymentTopology bosh.BoshVMs, m
 	groupID := properties["group_id"].(string)
 	plan := properties["plan_id"].(string)
 
+	omClient := OMClient{Url: URL, Username: adminUsername, ApiKey: adminAPIKey}
+
+	port, err := omClient.GetPort(groupID, plan)
+	if err != nil {
+		return err
+	}
+
 	servers := make([]string, len(deploymentTopology["mongod_node"]))
 	for i, node := range deploymentTopology["mongod_node"] {
-		servers[i] = fmt.Sprintf("%s:28000", node)
+		servers[i] = fmt.Sprintf("%s:%s", node, port)
 	}
 
 	if ssl {
-		omClient := OMClient{Url: URL, Username: adminUsername, ApiKey: adminAPIKey}
 		servers, _ = omClient.GetGroupHostnames(groupID, plan)
 	}
 
