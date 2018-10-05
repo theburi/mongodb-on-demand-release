@@ -382,6 +382,12 @@ packages:
       release: on-demand-service-broker
     - name: mongodb_service_adapter
       release: mongodb
+    - name: register-broker
+      release: on-demand-service-broker
+    - name: upgrade-all-service-instances
+      release: on-demand-service-broker
+    - name: deregister-broker
+      release: on-demand-service-broker
     max_in_flight: 1
     memory: 1024
     ephemeral_disk: 2048
@@ -835,6 +841,9 @@ packages:
     lifecycle: errand
     post_deploy: true
     run_post_deploy_errand_default: true
+    colocated: true
+    instances:
+    - broker/first
     templates:
     - name: register-broker
       release: on-demand-service-broker
@@ -859,6 +868,9 @@ packages:
     lifecycle: errand
     post_deploy: true
     run_post_deploy_errand_default: true
+    colocated: true
+    instances:
+    - broker/first
     templates:
     - name: upgrade-all-service-instances
       release: on-demand-service-broker
@@ -893,6 +905,9 @@ packages:
     label: 'On Demand Service Broker Deregistrar'
     lifecycle: errand
     pre_delete: true
+    colocated: true
+    instances:
+    - broker/first
     templates:
     - name: deregister-broker
       release: on-demand-service-broker
